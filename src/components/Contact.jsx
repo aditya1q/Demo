@@ -1,102 +1,77 @@
-// src/components/Form.js
-import { useState } from 'react';
-import Navbar from './Navbar';
+import { useRef } from 'react';
+import emailjs from '@emailjs/browser';
 
-const Form = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: '',
-    subscribe: false,
-  });
+const Contact = () => {
+  const form = useRef();
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
-
-  const handleSubmit = (e) => {
+  const sendEmail = (e) => {
     e.preventDefault();
+    console.log(form.current)
+
+    emailjs
+      .sendForm('service_og9gdeb', 'template_7n3erch', form.current, 'n3pxmxgStRA6_BLRZ')
+      .then((result) => {
+        console.log(result.text);
+        console.log("message sent");
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
+
+    form.current.reset();
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="w-full max-w-md mx-auto mt-20">
-        <form onSubmit={handleSubmit} className="bg-gray-100 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-              First Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              placeholder="Enter First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-              Last Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              placeholder="Enter Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="email"
-              placeholder="Address@example.com"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
-              Message
-            </label>
-            <textarea
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              name="message"
-              placeholder='Message'
-              rows="4"
-              value={formData.message}
-              onChange={handleChange}
-            ></textarea>
-          </div>
-          <div className="mb-6 text-center">
-            <button
-              className="border px-4 py-2 bg-blue-700 hover:bg-blue-500"
-              onClick={() => {
-                window.location.href = "mailto:adityatiwari9410@gmail.com";
-              }}
-            >
-              Submit👋
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+    <div className="flex items-center justify-center min-h-screen">
+      <form
+        ref={form}
+        onSubmit={sendEmail}
+        className="bg-white shadow-2xl border-gray-200 border rounded px-8 pt-6 pb-8 mb-4 w-1/3 flex flex-col gap-4 h-[70vh]"
+      >
+        <h1 className="text-2xl font-semibold mb-4">Contact</h1>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_name">
+            Name
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+            name="name"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user_email">
+            Email
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="email"
+            name="email"
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">
+            Message
+          </label>
+          <textarea
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="message"
+            name="message"
+            required
+          />
+        </div>
+        <div className="flex items-center justify-between">
+          <input
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+            value="Send"
+          />
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default Form;
+export default Contact;
